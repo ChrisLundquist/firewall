@@ -45,4 +45,10 @@ def set_platform_default_providers
     :resource => :firewall_rule,
     :provider => Chef::Provider::FirewallRuleUfw
   )
+
+  Chef::Platform.set(
+    :platform_family => [:debian,:rhel],
+    :resource => :firewall_rule,
+    :provider => Chef::Provider::FirewallRuleIptables
+  )
 end
