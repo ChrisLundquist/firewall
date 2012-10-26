@@ -1,3 +1,5 @@
+include Chef::Mixin::ShellOut
+
 action :allow do
 end
 
