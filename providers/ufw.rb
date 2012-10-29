@@ -25,7 +25,7 @@ action :enable do
     shell_out!("echo yes | ufw enable")
     Chef::Log.info("#{@new_resource} enabled")
     if @new_resource.log_level
-      shell_out!("ufw logging #{@new_resource.log_level}") 
+      shell_out!("ufw logging #{@new_resource.log_level}")
       Chef::Log.info("#{@new_resource} logging enabled at '#{@new_resource.log_level}' level")
     end
     new_resource.updated_by_last_action(true)
@@ -43,7 +43,7 @@ action :disable do
     Chef::Log.debug("#{@new_resource} already disabled.")
   end
 end
-  
+
 private
 def active?
   @active ||= begin
