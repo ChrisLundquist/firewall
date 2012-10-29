@@ -1,7 +1,7 @@
 #
 # Author:: Seth Chisamore (<schisamo@opscode.com>)
-# Cookbook Name:: firwall
-# Resource:: default
+# Cookbook Name:: firewall
+# Resource:: rule
 #
 # Copyright:: 2011, Opscode, Inc.
 #
@@ -18,27 +18,31 @@
 # limitations under the License.
 #
 
-actions :enable, :disable
+IP_CIDR_VALID_REGEX = /\b(?:\d{1,3}\.){3}\d{1,3}\b(\/[0-3]?[0-9])?/
 
-attribute :log_level, :kind_of => Symbol, :equal_to => [:low, :medium, :high, :full], :default => :low
+actions :allow, :deny, :reject
+
+attribute :port,      :kind_of => Integer
+attribute :protocol,  :kind_of => Symbol, :equal_to => [ :udp, :tcp ]
+attribute :direction, :kind_of => Symbol, :equal_to => [ :in, :out ]
+attribute :interface, :kind_of => String
+attribute :logging,   :kind_of => Symbol, :equal_to => [ :connections, :packets ]
+attribute :source,      :regex => IP_CIDR_VALID_REGEX
+attribute :destination, :regex => IP_CIDR_VALID_REGEX
+attribute :dest_port, :kind_of => Integer
+attribute :position,  :kind_of => Integer
 
 def initialize(name, run_context=nil)
   super
   set_platform_default_providers
-  @action = :enable
+  @action = :reject
 end
 
 private
 def set_platform_default_providers
   Chef::Platform.set(
     :platform => :ubuntu,
-    :resource => :firewall,
-    :provider => Chef::Provider::FirewallUfw
-  )
-
-  Chef::Platform.set(
-    :platform_family => [:debian,:rhel],
     :resource => :firewall_rule,
-    :provider => Chef::Provider::FirewallRuleIptables
+    :provider => Chef::Provider::FirewallRuleUfw
   )
 end
